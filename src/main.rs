@@ -18,6 +18,8 @@ async fn main() {
         .await
         .unwrap();
 
+    info!("OpenAPI is opened!");
+
     info!(
         "Application is started and listening on port {:?}",
         *config::SERVER_PORT

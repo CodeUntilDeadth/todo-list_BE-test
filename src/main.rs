@@ -1,6 +1,5 @@
 mod api;
 mod config;
-mod model;
 
 use std::net::SocketAddr;
 
@@ -14,7 +13,7 @@ async fn main() {
         .with(tracing_subscriber::fmt::layer().pretty())
         .init();
 
-    let listener = TcpListener::bind(SocketAddr::new([127, 0, 0, 1].into(), *config::SERVER_PORT))
+    let listener = TcpListener::bind(SocketAddr::new([0, 0, 0, 0].into(), *config::SERVER_PORT))
         .await
         .unwrap();
 

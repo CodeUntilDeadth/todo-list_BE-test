@@ -44,7 +44,7 @@ jobs:
       - name: Deploy to Fly.io
         env: 
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        run: "flyctl deploy --remote-only -a todo-list-be"
+        run: "flyctl deploy --remote-only -a todo-list-be --image ${{secrets.DOCKER_USERNAME}}/todo-list-be:latest"
 
       
             

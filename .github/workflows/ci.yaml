@@ -1,0 +1,25 @@
+name: ci
+on: 
+  push: 
+    branches: ["develop"]
+
+jobs:
+  clean-code:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install rustup toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+          components: clippy
+
+      - name: Checking clean code
+        uses: actions-rs/clippy-check
+        with: 
+          token:  ${{secrets.GITHUB_TOKEN}}
+          args: --all-features
+  

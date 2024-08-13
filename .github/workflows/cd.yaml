@@ -12,9 +12,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -30,10 +27,18 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/todo-list-be:latest
+        env: 
+          GG_CLIENT_ID: ${{ secrets.GG_CLIENT_ID }}
+          GG_CLIENT_SECRET: ${{ secrets.GG_CLIENT_SECRET }}
+          GG_REDIRECT_URL: ${{ secrets.GG_DIRECT_URL }}
+          GG_AUTH_URL: ${{ secrets.GG_AUTH_URL }}
+          GG_TOKEN_URL: ${{ secrets.GG_TOKEN_URL }}
+          SERVER_PORT: ${{ secrets.SERVER_PORT }}
 
   deploy: 
     name: deploy
     runs-on: ubuntu-22.04
+    needs: build-image
     steps: 
       - name: Checkout code
         uses: actions/checkout@v4

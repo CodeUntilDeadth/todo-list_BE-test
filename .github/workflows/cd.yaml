@@ -40,17 +40,6 @@ jobs:
       - name: Install Flyctl
         uses: superfly/flyctl-actions/setup-flyctl@v1
 
-      - name: Set Fly.io Secrets
-        run: |
-          flyctl secrets set GG_CLIENT_ID=${{ secrets.GG_CLIENT_ID }} -a todo-list-be
-          flyctl secrets set GG_CLIENT_SECRET=${{ secrets.GG_CLIENT_SECRET }} -a todo-list-be
-          flyctl secrets set GG_REDIRECT_URL=${{ secrets.GG_REDIRECT_URL }} -a todo-list-be 
-          flyctl secrets set GG_AUTH_URL=${{ secrets.GG_AUTH_URL }} -a todo-list-be
-          flyctl secrets set GG_TOKEN_URL=${{ secrets.GG_TOKEN_URL }} -a todo-list-be
-          flyctl secrets set SERVER_PORT=${{ secrets.SERVER_PORT }} -a todo-list-be
-        env: 
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
       - name: Deploy to Fly.io
         env: 
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

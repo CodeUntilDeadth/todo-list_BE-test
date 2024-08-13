@@ -1,10 +1,8 @@
-use std::sync::Arc;
-
 use dotenv::dotenv;
 use oauth2::{basic::BasicClient, AuthUrl, ClientId, ClientSecret, RedirectUrl, TokenUrl};
 
 use crate::{
-    config::{self, AppConfig, GoogleConfig},
+    config::{AppConfig, GoogleConfig},
     error::{Error, Result},
 };
 

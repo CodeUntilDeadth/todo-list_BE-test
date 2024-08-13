@@ -1,9 +1,9 @@
 mod api;
+mod app_state;
 mod config;
 mod error;
 
-use std::net::SocketAddr;
-
+use app_state::AppState;
 use dotenv::dotenv;
 use tokio::net::TcpListener;
 use tracing::info;
@@ -14,10 +14,10 @@ async fn main() {
     tracing_subscriber::registry()
         .with(tracing_subscriber::fmt::layer().pretty())
         .init();
-
     dotenv().ok();
+    let app_sate = AppState::new().await.unwrap();
 
-    let listener = TcpListener::bind(SocketAddr::new([0, 0, 0, 0].into(), *config::SERVER_PORT))
+    let listener = TcpListener::bind(format!("0.0.0.0:{}", *config::SERVER_PORT))
         .await
         .unwrap();
 
@@ -28,5 +28,5 @@ async fn main() {
         *config::SERVER_PORT
     );
 
-    axum::serve(listener, api::build()).await.unwrap();
+    axum::serve(listener, api::build(app_sate)).await.unwrap();
 }

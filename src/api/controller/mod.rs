@@ -1,4 +1,4 @@
-pub mod oauth2_gg;
+pub mod auth;
 mod ping;
 
 pub use ping::*;

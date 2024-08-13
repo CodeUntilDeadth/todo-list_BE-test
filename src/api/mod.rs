@@ -1,6 +1,8 @@
 mod controller;
 mod docs;
 
+use std::sync::Arc;
+
 use axum::{routing::get, Router};
 
 use controller::{
@@ -13,7 +15,7 @@ use utoipa_swagger_ui::SwaggerUi;
 
 use crate::app_state::AppState;
 
-pub fn build(state: AppState) -> Router {
+pub fn build(state: Arc<AppState>) -> Router {
     let router = Router::new()
         .route("/", get(ping))
         .route("/auth/login", get(oauth_redirect))

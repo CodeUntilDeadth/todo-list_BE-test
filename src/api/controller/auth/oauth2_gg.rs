@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use axum::{
     extract::{Query, State},
     response::{IntoResponse, Redirect},
@@ -18,8 +20,8 @@ pub struct AuthRequest {
     state: String,
 }
 
-pub async fn oauth_redirect(State(state): State<AppState>) -> impl IntoResponse {
-    let client = state.gg_client;
+pub async fn oauth_redirect(State(state): State<Arc<AppState>>) -> impl IntoResponse {
+    let client = &state.gg_client;
     // Add the desired scopes
     let scopes = vec![
         Scope::new("https://www.googleapis.com/auth/userinfo.profile".to_string()),
@@ -36,9 +38,9 @@ pub async fn oauth_redirect(State(state): State<AppState>) -> impl IntoResponse 
 
 pub async fn login_by_gg(
     Query(params): Query<AuthRequest>,
-    State(state): State<AppState>,
+    State(state): State<Arc<AppState>>,
 ) -> Result<Json<Value>> {
-    let client = state.gg_client;
+    let client = &state.gg_client;
     // Exchange the authorization code for an access token.
     let token_result = client
         .exchange_code(AuthorizationCode::new(params.code))

@@ -18,13 +18,16 @@ impl AppState {
         let config = envy::from_env::<AppConfig>()?;
         let gg_config = envy::prefixed("GG_").from_env::<GoogleConfig>()?;
 
-        let auth_url = AuthUrl::new(gg_config.auth_url).map_err(|err| {
-            let error = format!("Failed to parse auth_url []: {}", err);
+        let auth_url = AuthUrl::new(gg_config.clone().auth_url).map_err(|err| {
+            let error = format!("Failed to parse auth_url [{}]: {}", gg_config.auth_url, err);
             Error::OAuthError(error)
         })?;
 
-        let token_url = TokenUrl::new(gg_config.token_url).map_err(|err| {
-            let error = format!("Failed to parse token_url []: {}", err);
+        let token_url = TokenUrl::new(gg_config.clone().token_url).map_err(|err| {
+            let error = format!(
+                "Failed to parse token_url [{}]: {}",
+                gg_config.auth_url, err
+            );
             Error::OAuthError(error)
         })?;
 

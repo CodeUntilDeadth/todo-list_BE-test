@@ -1,41 +1,46 @@
+use std::sync::Arc;
+
+use dotenv::dotenv;
 use oauth2::{basic::BasicClient, AuthUrl, ClientId, ClientSecret, RedirectUrl, TokenUrl};
 
-use crate::{config, error::Result};
+use crate::{
+    config::{self, AppConfig, GoogleConfig},
+    error::{Error, Result},
+};
 
-#[derive(Clone)]
 pub struct AppState {
+    pub config: AppConfig,
     pub gg_client: BasicClient,
 }
 
 impl AppState {
     pub async fn new() -> Result<Self> {
-        let auth_url = AuthUrl::new(config::GG_AUTH_URL.to_string())
-            .map_err(|err| {
-                format!(
-                    "Failed to parse auth_url [{}]: {}",
-                    config::GG_AUTH_URL.to_string(),
-                    err
-                )
-            })
-            .unwrap();
-        let token_url = TokenUrl::new(config::GG_TOKEN_URL.to_string())
-            .map_err(|err| {
-                format!(
-                    "Failed to parse auth_url [{}]: {}",
-                    config::GG_TOKEN_URL.to_string(),
-                    err
-                )
-            })
-            .unwrap();
+        dotenv().ok();
+
+        let config = envy::from_env::<AppConfig>()?;
+        let gg_config = envy::prefixed("GG_").from_env::<GoogleConfig>()?;
+
+        let auth_url = AuthUrl::new(gg_config.auth_url).map_err(|err| {
+            let error = format!("Failed to parse auth_url []: {}", err);
+            Error::OAuthError(error)
+        })?;
+
+        let token_url = TokenUrl::new(gg_config.token_url).map_err(|err| {
+            let error = format!("Failed to parse token_url []: {}", err);
+            Error::OAuthError(error)
+        })?;
 
         let client = BasicClient::new(
-            ClientId::new(config::GG_CLIENT_ID.to_string()),
-            Some(ClientSecret::new(config::GG_CLIENT_SECRET.to_string())),
+            ClientId::new(gg_config.client_id),
+            Some(ClientSecret::new(gg_config.client_secret)),
             auth_url,
             Some(token_url),
         )
-        .set_redirect_uri(RedirectUrl::new(config::GG_REDIRECT_URI.to_string()).unwrap());
+        .set_redirect_uri(RedirectUrl::new(gg_config.redirect_url)?);
 
-        Ok(Self { gg_client: client })
+        Ok(Self {
+            config,
+            gg_client: client,
+        })
     }
 }

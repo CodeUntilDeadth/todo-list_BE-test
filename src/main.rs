@@ -3,8 +3,9 @@ mod app_state;
 mod config;
 mod error;
 
+use std::sync::Arc;
+
 use app_state::AppState;
-use dotenv::dotenv;
 use tokio::net::TcpListener;
 use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
@@ -14,10 +15,12 @@ async fn main() {
     tracing_subscriber::registry()
         .with(tracing_subscriber::fmt::layer().pretty())
         .init();
-    dotenv().ok();
-    let app_sate = AppState::new().await.unwrap();
 
-    let listener = TcpListener::bind(format!("0.0.0.0:{}", *config::SERVER_PORT))
+    let app_sate = Arc::new(AppState::new().await.unwrap());
+    let config = &app_sate.clone().config;
+    let server = api::build(app_sate);
+
+    let listener = TcpListener::bind(format!("0.0.0.0:{}", config.server_port))
         .await
         .unwrap();
 
@@ -25,8 +28,8 @@ async fn main() {
 
     info!(
         "Application is started and listening on port {:?}",
-        *config::SERVER_PORT
+        config.server_port
     );
 
-    axum::serve(listener, api::build(app_sate)).await.unwrap();
+    axum::serve(listener, server).await.unwrap();
 }

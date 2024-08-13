@@ -1,3 +1,8 @@
 target/
+Dockerfile
 .git/
 .gitignore
+.github/
+fly.toml
+fly.example.toml
+.env.example

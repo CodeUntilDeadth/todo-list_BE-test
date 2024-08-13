@@ -1,15 +1,9 @@
-mod server;
+mod gg;
 
-use std::{env, str::FromStr};
+pub use gg::*;
+use serde::Deserialize;
 
-pub use server::*;
-
-pub fn env_or_default<T: FromStr>(env_name: &str, default: T) -> T {
-    match env::var(env_name) {
-        Ok(raw) => match raw.replace("\\n", "\n").parse() {
-            Ok(value) => value,
-            Err(_) => default,
-        },
-        Err(_) => default,
-    }
+#[derive(Deserialize, Debug)]
+pub struct AppConfig {
+    pub server_port: u16,
 }

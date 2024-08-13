@@ -5,4 +5,5 @@ Dockerfile
 .github/
 fly.toml
 fly.example.toml
+.env
 .env.example

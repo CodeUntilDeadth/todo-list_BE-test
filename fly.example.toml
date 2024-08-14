@@ -1,3 +1,0 @@
-app="app-name"
-[build]
-image="docker-username/app-name:latest"

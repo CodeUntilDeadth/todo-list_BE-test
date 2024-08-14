@@ -27,7 +27,7 @@ async fn main() {
     info!("OpenAPI is opened!");
 
     info!(
-        "Application is started and listening on port {:?}",
+        "Application is started and listening on port {:?}!!!",
         config.server_port
     );
 

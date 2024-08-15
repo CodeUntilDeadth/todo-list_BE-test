@@ -31,7 +31,7 @@ impl AppState {
             Error::OAuthError(error)
         })?;
 
-        let client = BasicClient::new(
+        let gg_client = BasicClient::new(
             ClientId::new(gg_config.client_id),
             Some(ClientSecret::new(gg_config.client_secret)),
             auth_url,
@@ -39,9 +39,6 @@ impl AppState {
         )
         .set_redirect_uri(RedirectUrl::new(gg_config.redirect_url)?);
 
-        Ok(Self {
-            config,
-            gg_client: client,
-        })
+        Ok(Self { config, gg_client })
     }
 }

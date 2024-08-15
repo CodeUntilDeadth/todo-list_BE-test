@@ -58,3 +58,9 @@ impl From<String> for Error {
         Error::OAuthError(value)
     }
 }
+
+impl From<mongodb::error::Error> for Error {
+    fn from(value: mongodb::error::Error) -> Self {
+        Error::Other(value.into())
+    }
+}

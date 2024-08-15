@@ -2,6 +2,7 @@ mod api;
 mod app_state;
 mod config;
 mod error;
+mod utils;
 
 use std::sync::Arc;
 
